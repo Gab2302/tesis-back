@@ -21,7 +21,6 @@ router.register('progress-logs', ProgressLogViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('register/', register_user),
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # 👈 Login
+    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # 👈 Refresh # ✅ Asegúrate de que core/urls.py exista
 ]
-

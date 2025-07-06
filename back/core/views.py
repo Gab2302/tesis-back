@@ -13,8 +13,10 @@ from .serializers import CustomTokenObtainPairSerializer
 def register_user(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        user = serializer.save()
+        # Serializa el usuario creado para incluir el id
+        response_serializer = UserSerializer(user)
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -29,6 +31,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+
 
 class PatientNutritionistViewSet(viewsets.ModelViewSet):
     queryset = PatientNutritionist.objects.all()

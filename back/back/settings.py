@@ -1,6 +1,9 @@
 from pathlib import Path
 from datetime import timedelta
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
 
 # ------------------- BASE -------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -8,10 +11,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-j)s%x7hi+l!ehh5$1tzbi!_$4_14^qdg5oss(p9ap7l=x=h&-s'
 
 DEBUG = True  # ⚠️ Cambiar a False en producción
-ALLOWED_HOSTS = ['*']  # ⚠️ Reemplazar con dominio/IP en producción
+ALLOWED_HOSTS = ["*"]
 
 # ------------------- APPS -------------------
-INSTALLED_APPS = [
+INSTALLED_APPS = [ 
     # Django
     'django.contrib.admin',
     'django.contrib.auth',
@@ -32,6 +35,7 @@ INSTALLED_APPS = [
 # ------------------- MIDDLEWARE -------------------
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # Siempre primero
+     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,16 +67,19 @@ TEMPLATES = [
 ]
 
 # ------------------- DATABASE -------------------
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'NutriLabel',
-        'USER': 'root',
-        'PASSWORD': 'Mysql123',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': os.environ.get('DB_NAME', 'NutriLabel'),
+        'USER': os.environ.get('DB_USER', 'root'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', ''),
+        'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
+
 
 # ------------------- VALIDACIÓN DE CONTRASEÑAS -------------------
 AUTH_PASSWORD_VALIDATORS = [
@@ -90,6 +97,9 @@ USE_TZ = True
 
 # ------------------- ARCHIVOS ESTÁTICOS -------------------
 STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 # ------------------- CLAVE PRIMARIA POR DEFECTO -------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

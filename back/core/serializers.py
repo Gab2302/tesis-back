@@ -4,16 +4,13 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token['email'] = user.email
-        return token
-
     def validate(self, attrs):
-        # Permitir login con email en lugar de username
-        attrs['username'] = attrs.get('email', '')
-        return super().validate(attrs)
+        data = super().validate(attrs)
+        # Agrega el user_id y otros datos que quieras retornar
+        data['user_id'] = self.user.id
+        data['email'] = self.user.email
+        data['role'] = self.user.role
+        return data
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -32,7 +29,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = '__all__'
-
+        
     def validate(self, data):
         goal = data.get('goal_type')
         weight = data.get('weight_kg')
@@ -73,29 +70,29 @@ class ProfileSerializer(serializers.ModelSerializer):
 class PatientNutritionistSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientNutritionist
-        fields = '__all__'
+        fields = '_all_'
 
 class ScanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scan
-        fields = '__all__'
+        fields = '_all_'
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = '__all__'
+        fields = '_all_'
 
 class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
-        fields = '__all__'
+        fields = '_all_'
 
 class ScanRecipeSuggestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScanRecipeSuggestion
-        fields = '__all__'
+        fields = '_all_'
 
 class ProgressLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProgressLog
-        fields = '__all__'
+        fields = '_all_'
